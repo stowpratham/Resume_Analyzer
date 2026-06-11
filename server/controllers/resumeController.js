@@ -3,6 +3,7 @@ import path from 'path';
 import Resume from '../models/Resume.js';
 import { parseDocx } from '../services/docxParser.js';
 import { parsePdf } from '../services/pdfParser.js';
+import { calculateATSScore } from '../services/atsScorer.js';
 
 export const uploadResume = async (req, res, next) => {
   try {
@@ -28,7 +29,7 @@ export const uploadResume = async (req, res, next) => {
       fileType,
       extractedText,
       uploadDate: new Date(),
-      score: Math.floor(65 + Math.random() * 30),
+      score: calculateATSScore(extractedText),
     });
 
     res.status(201).json({
@@ -59,6 +60,22 @@ export const getResume = async (req, res, next) => {
         resumeInfo: resume,
         extractedText: resume.extractedText,
       },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUserResumes = async (req, res, next) => {
+  try {
+    const resumes = await Resume.find({
+      userId: req.user._id,
+    }).sort({ uploadDate: -1 });
+
+    res.json({
+      success: true,
+      message: 'Resumes fetched successfully.',
+      data: resumes,
     });
   } catch (error) {
     next(error);

@@ -39,10 +39,27 @@ function Analysis() {
       </DashboardLayout>
     );
   }
-    const extractedSkills = resume?.extractedText
-    ?.match(/\b(JavaScript|React|Node|MongoDB|Python|SQL|AWS|Java|C\+\+|HTML|CSS)\b/gi)
-    ?.filter((value, index, self) => self.indexOf(value) === index) || [];
 
+  const skillDisplayNames = {
+  JAVASCRIPT: 'JavaScript',
+  REACT: 'React',
+  NODE: 'Node',
+  MONGODB: 'MongoDB',
+  PYTHON: 'Python',
+  SQL: 'SQL',
+  AWS: 'AWS',
+  JAVA: 'Java',
+  'C++': 'C++',
+  HTML: 'HTML',
+  CSS: 'CSS',
+};
+const extractedSkills = [
+  ...new Set(
+    resume?.extractedText?.match(
+      /\b(JavaScript|React|Node|MongoDB|Python|SQL|AWS|Java|C\+\+|HTML|CSS)\b/gi
+    )?.map(skill => skill.toUpperCase()) || []
+  ),
+];
   const missingSkills = ['AWS', 'Docker', 'TypeScript']
     .filter(skill => !extractedSkills.includes(skill));
   return (
